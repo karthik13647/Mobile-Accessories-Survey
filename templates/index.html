@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-W2N6F95B');</script>
+    <!-- End Google Tag Manager -->    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Mobile Accessories Survey</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    
+    /* Base styles */
+    body {
+      background-color: #ffeeee; /* Lightest red background */
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 80%; /* Make form take up 80% of the viewport width */
+      max-width: 1200px; /* Set a reasonable max-width for very large screens */
+      background: #fff; /* White form background */
+      margin: 20px auto;
+      padding: 40px; /* More spacious padding */
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      animation: fadeIn 0.8s ease-in-out; /* Fade in animation */
+      transform-origin: center;
+    }
+    
+    /* Attractive header styling */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .header h1 {
+      color: #e74c3c;
+      font-size: 28px;
+      margin-bottom: 5px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .header h1:after {
+      content: '';
+      position: absolute;
+      width: 60%;
+      height: 3px;
+      background: linear-gradient(to right, #ffb8b8, #e74c3c);
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 16px;
+      max-width: 90%;
+      margin: 20px auto;
+    }
+    
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #ddd, transparent);
+      margin: 25px 0;
+    }
+    
+    /* Form styling */
+    .question {
+      margin-bottom: 28px;
+      animation: slideUp 0.5s ease-out forwards;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .question:nth-child(1) { animation-delay: 0.1s; }
+    .question:nth-child(2) { animation-delay: 0.2s; }
+    .question:nth-child(3) { animation-delay: 0.3s; }
+    .question:nth-child(4) { animation-delay: 0.4s; }
+    .question:nth-child(5) { animation-delay: 0.5s; }
+    .question:nth-child(6) { animation-delay: 0.6s; }
+    .question:nth-child(7) { animation-delay: 0.7s; }
+    .question:nth-child(8) { animation-delay: 0.8s; }
+    .question:nth-child(9) { animation-delay: 0.9s; }
+    
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 10px;
+      color: #444;
+      font-size: 16px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 5px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    /* Smaller placeholder text */
+    ::placeholder {
+      font-size: 13px;
+      color: #aaa;
+    }
+    
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+      outline: none;
+    }
+    
+    .options {
+      margin-left: 5px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-gap: 8px;
+    }
+    
+    .options label {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      margin-bottom: 0;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .options label:hover {
+      background-color: #fff5f5;
+    }
+    
+    .options input[type="radio"],
+    .options input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+      accent-color: #e74c3c;
+    }
+    
+    button {
+      background: linear-gradient(to right, #e74c3c, #ff7675);
+      color: #fff;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+      animation: pulse 2s infinite;
+      width: 100%;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+    }
+    
+    /* Table styling for Q4 and Q5 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table th,
+    table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-size: 15px;
+      vertical-align: middle;
+    }
+    table th {
+      background-color: #f9f9f9;
+      font-weight: 600;
+      text-align: center;
+    }
+    table td {
+      text-align: center;
+    }
+    table td:first-child {
+      text-align: left;
+      font-weight: 500;
+    }
+    table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+table th {
+  background-color: #f9f9f9;
+  font-weight: 600;
+  text-align: center;
+}
+
+table td:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+
+/* Center radio buttons in each cell */
+table td input[type="radio"] {
+  display: block;
+  margin: 0 auto;
+  transform: scale(1.1);
+  accent-color: #e74c3c; /* your theme color */
+}
+
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    @keyframes slideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+      }
+      50% {
+        box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
+      }
+      100% {
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+      }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        width: 90%; /* Slightly wider on mobile */
+        padding: 25px;
+        margin: 20px auto;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+      }
+      
+      table th,
+      table td {
+        font-size: 14px;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2N6F95B"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+  <div class="container">
+    <div class="header">
+      <h1>📱 Premium Mobile Accessories Survey ✨</h1>
+      <p>👋 Hi there! Thanks for taking a few minutes to share your thoughts with us. We're passionate about creating top-quality mobile accessories, and your feedback is incredibly valuable in shaping what we offer next. 💡</p>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <form id="surveyForm" method="post">
+      
+      <!-- Question 1: Mood -->
+      <div class="question">
+        <label for="mood">Our mood affects entire day right. Tell me, what's your mood?</label>
+        <div class="options">
+          <label><input type="radio" name="mood" id="mood" value="happy" required> I'm happy</label>
+          <label><input type="radio" name="mood" id="mood" value="calm"> I just completed meditation (Calm)</label>
+          <label><input type="radio" name="mood" id="mood" value="break"> I take a break from war right now</label>
+          <label><input type="radio" name="mood" id="mood" value="broke"> I lost 5Million right now how can i be happy huuman</label>
+        </div>
+      </div>
+      
+      <!-- Question 2: Special Person -->
+      <div class="question">
+        <label for="special">Special things waiting for special persons: do you think you are the one..?</label>
+        <div class="options">
+          <label><input type="radio" name="special" id="special" value="yes" required> Yeah I think so..! Show me what you have.</label>
+          <label><input type="radio" name="special" id="special" value="curious"> I'm not the special one, but still curious</label>
+          <label><input type="radio" name="special" id="special" value="notSure"> I don't think I'm, but still show..</label>
+        </div>
+      </div>
+      
+      <!-- Question 3: Productivity Spending -->
+      <div class="question">
+        <label for="productivity">We value time &gt; not money, so where do you spend on productivity...?</label>
+        <div class="options">
+          <label><input type="checkbox" name="productivity[]" id="productivity" value="AITools"> AI tools</label>
+          <label><input type="checkbox" name="productivity[]" id="productivity" value="MobilePhones"> Mobile phones</label>
+          <label><input type="checkbox" name="productivity[]" id="productivity" value="SocialMedia"> Social Media</label>
+          <label><input type="checkbox" name="productivity[]" id="productivity" value="Nowhere"> No where</label>
+        </div>
+      </div>
+      
+      <!-- Question 4: Accessories in Table Format -->
+      <div class="question">
+        <label>Accessories are guardian angels to mobile. so whom you choose?</label>
+        <table>
+          <thead>
+            <tr>
+              <th>Accessories</th>
+              <th>I love them</th>
+              <th>Silly thing I dont care</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Phone Case</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="PhoneCase"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="PhoneCase"></td>
+            </tr>
+            <tr>
+              <td>Power Bank / Portable Charger</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="PowerBank"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="PowerBank"></td>
+            </tr>
+            <tr>
+              <td>Wireless Earbuds/Headphones (e.g., AirPods, Galaxy Buds)</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="WirelessEarbuds"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="WirelessEarbuds"></td>
+            </tr>
+            <tr>
+              <td>Smartwatch (e.g., Apple Watch, Galaxy Watch)</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="Smartwatch"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="Smartwatch"></td>
+            </tr>
+            <tr>
+              <td>Camera Lens Protector</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="CameraLensProtector"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="CameraLensProtector"></td>
+            </tr>
+            <tr>
+              <td>Tripod</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="Tripod"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="Tripod"></td>
+            </tr>
+            <tr>
+              <td>Telephonic Lens</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="TelephonicLens"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="TelephonicLens"></td>
+            </tr>
+            <tr>
+              <td>Selfie stick</td>
+              <td><input type="checkbox" name="accessoriesLove[]" value="SelfieStick"></td>
+              <td><input type="checkbox" name="accessoriesDislike[]" value="SelfieStick"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Question 5: Quality Rating in Table Format -->
+      <!-- Question 5: Quality Rating (2 Radio Buttons) -->
+<div class="question">
+  <label>Every one loves a quality in mobile, what's quality attract you..</label>
+  <table>
+    <thead>
+      <tr>
+        <th>Quality Aspect</th>
+        <th>Not Important At All</th>
+        <th>Extremely Important</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Brand Reputation</td>
+        <td><input type="radio" name="quality_brand" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_brand" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Material Quality (e.g., metal, leather, premium plastics)</td>
+        <td><input type="radio" name="quality_material" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_material" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Design &amp; Aesthetics</td>
+        <td><input type="radio" name="quality_design" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_design" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Durability &amp; Protection</td>
+        <td><input type="radio" name="quality_durability" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_durability" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Specific Features (e.g., MagSafe, fast charging speed)</td>
+        <td><input type="radio" name="quality_features" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_features" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Warranty &amp; Customer Support</td>
+        <td><input type="radio" name="quality_warranty" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_warranty" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Perfect Fit &amp; Compatibility</td>
+        <td><input type="radio" name="quality_fit" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_fit" value="Extremely Important"></td>
+      </tr>
+      <tr>
+        <td>Eco-Friendly / Sustainable Material</td>
+        <td><input type="radio" name="quality_eco" value="Not Important At All" required></td>
+        <td><input type="radio" name="quality_eco" value="Extremely Important"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+      
+      <!-- Question 6: Premium Phone Case Value -->
+      <div class="question">
+        <label for="phonecase_value">📱 Premium phone case is the Arc Reactor of Iron Man – what do you value most?</label>
+        <div class="options">
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="protection" required> Maximum Protection (Drop-proofing)</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="minimalist"> Slim &amp; Minimalist Design</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="unique"> Unique Style / Look</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="premiumMaterials"> Premium Materials / Feel (Leather, Wood, Metal)</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="grip"> Strong Grip / Handling</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="magsafe"> MagSafe / Wireless Charging Compatibility</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="features"> Built-in features (e.g., kickstand, cardholder)</label>
+          <label><input type="radio" name="phonecase_value" id="phonecase_value" value="brand"> Brand Name</label>
+        </div>
+      </div>
+      
+      <!-- Question 7: Music Picks -->
+      <div class="question">
+        <label for="music_pick">Music is a therapy to all, what are the best picks for you?</label>
+        <div class="options">
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="soundQuality"> Sound Quality (Clarity, Bass, etc.)</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="comfort"> Comfort &amp; Fit</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="battery"> Battery Life</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="noiseCancellation"> Noise Cancellation Quality</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="connectivity"> Seamless Connectivity / Bluetooth Stability</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="buildQuality"> Build Quality &amp; Durability</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="compactCase"> Compact Charging Case</label>
+          <label><input type="checkbox" name="music_pick[]" id="music_pick" value="brandReputation"> Brand Reputation</label>
+        </div>
+      </div>
+      
+      <!-- Question 8: Spending on Accessories -->
+      <div class="question">
+        <label for="spend">I value comfort in accessory over money, how much do you spend?</label>
+        <div class="options">
+          <label><input type="radio" name="spend" id="spend" value="under1500" required> Under ₹1,500 ($20)</label>
+          <label><input type="radio" name="spend" id="spend" value="1500to2999"> ₹1,500 - ₹2,999 ($20-$39)</label>
+          <label><input type="radio" name="spend" id="spend" value="3000to4499"> ₹3,000 - ₹4,499 ($40-$59)</label>
+          <label><input type="radio" name="spend" id="spend" value="4500to6499"> ₹4,500 - ₹6,499 ($60-$79)</label>
+          <label><input type="radio" name="spend" id="spend" value="6500to8000"> ₹6,500 - ₹8,000</label>
+        </div>
+      </div>
+      
+      <!-- Question 9: Age -->
+      <div class="question">
+        <label for="age">Personality matters, not your age. However, what is your age?</label>
+        <div class="options">
+          <label><input type="radio" name="age" id="age" value="18-24" required> 18-24</label>
+          <label><input type="radio" name="age" id="age" value="25-34"> 25-34</label>
+          <label><input type="radio" name="age" id="age" value="35-44"> 35-44</label>
+          <label><input type="radio" name="age" id="age" value="45-54"> 45-54</label>
+          <label><input type="radio" name="age" id="age" value="55+"> 55+</label>
+        </div>
+      </div>
+      
+      <!-- Thank You Message -->
+      <div class="question">
+        <p>🎉 Thank You! 🙏<br>
+        We really appreciate you taking the time to share your valuable feedback. Your input helps us design and deliver better premium accessories. Have a great day!</p>
+      </div>
+      
+      <button type="submit">Submit Your Response</button>
+    </form>
+  </div>
+</body>
+</html>
