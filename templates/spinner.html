@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Spinner</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            width: 30px;
+            height: 40px;
+        }
+
+        .pointer::before {
+            content: '';
+            position: absolute;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 40px solid #ff4444;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .spinner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .spinner-partition {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            transform: rotate(calc(72deg * var(--i)));
+            overflow: hidden;
+        }
+
+        .spinner-partition::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform: rotate(36deg);
+            transform-origin: bottom right;
+            background-size: cover;
+            background-position: center;
+            background-image: var(--partition-image);
+            border: 1px solid #fff;
+            box-sizing: border-box;
+        }
+
+        .spinner-center {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+
+        .spinner-center::after {
+            content: 'SPIN';
+            font-size: 18px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .spinner-center:hover {
+            background: #f0f0f0;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .spinner-center:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="spinner-container">
+        <div class="pointer"></div>
+        <div class="spinner">
+            <div class="spinner-partition" style="--i:0; --partition-image: url('https://imgs.search.brave.com/DmT0Qd_bBmm5d6IthsizlIx4MRkr_LpubNta6UjpsVk/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtcGxhdGZvcm0u/OTlzdGF0aWMuY29t/Ly9KNXFybVhtZnJX/Vm52YUdVbWQ0ZU1k/QVZmQkE9LzB4MDo5/NjB4OTYwL2ZpdC1p/bi81OTB4NTkwL3By/b2plY3RzLWZpbGVz/LzI4LzI4MTAvMjgx/MDA1LzE5Yzk5NDll/LTY3NmItNDYxNS1h/NmI5LTdkNjFkNDYx/MTk0My5wbmc')">
+            </div>
+            <div class="spinner-partition" style="--i:1; --partition-image: url('https://imgs.search.brave.com/3_ldeYjCCWYgrKhvqNbHl97DvPwlJWRD38HpKYP-JCQ/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzAzLzI5LzA2Lzk0/LzM2MF9GXzMyOTA2/OTQzNl8wR3Q1VjA0/WHhLSGlCTDFLNkQy/WFJ5S1J6eU5nTk9y/RS5qcGc')">
+            </div>
+            <div class="spinner-partition" style="--i:2; --partition-image: url('https://imgs.search.brave.com/EaKek-l9c44R3BZGBOGCEvEfkdAXF6HDQ9A4l-N1NhQ/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzIyNjYwNDExL2Mv/Mjg1Ny8yODU3LzM2/LzYxL2lsL2FmOTNh/Mi8yNjg2NDAzMTM0/L2lsXzYwMHg2MDAu/MjY4NjQwMzEzNF83/cWRwLmpwZw')">
+            </div>
+            <div class="spinner-partition" style="--i:3; --partition-image: url('https://imgs.search.brave.com/9iMpPWKs-RCxbsQ_RhzDhajUEfiu7ESYBjb3yD6rYG4/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzQxODI0NjUzL3Iv/aWwvMTRjMGM4LzQ3/MzE5MjkzMzgvaWxf/NjAweDYwMC40NzMx/OTI5MzM4X2dlMDMu/anBn')">
+            </div>
+            <div class="spinner-partition" style="--i:4; --partition-image: url('https://imgs.search.brave.com/lFxQBE6Wz7M9tLmPOW3bMjOlUXbWVP60Gl2EqNeHl1E/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuZnJlZWltYWdl/cy5jb20vaW1hZ2Vz/L2dyaWRzL2Q2Mi9s/b2dvLWZpcmVtYW4t/MS0xNDI3NzQ3Lmpw/Zw')">
+            </div>
+            <div class="spinner-center" id="spin-button"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const spinner = document.querySelector('.spinner');
+            const spinButton = document.getElementById('spin-button');
+            let isSpinning = false;
+            let currentRotation = 0;
+
+            spinButton.addEventListener('click', function() {
+                if (isSpinning) return;
+                
+                isSpinning = true;
+                
+                const extraRotations = 3 + Math.floor(Math.random() * 4);
+                const randomSegment = Math.floor(Math.random() * 5) * 72;
+                const totalRotation = currentRotation + (extraRotations * 360) + randomSegment;
+                
+                spinner.style.transform = `rotate(${-totalRotation}deg)`;
+                
+                setTimeout(() => {
+                    isSpinning = false;
+                    currentRotation = totalRotation % 360;
+                    const finalPosition = Math.round((360 - (currentRotation % 360)) / 72) % 5;
+                    console.log('Landed on position:', finalPosition + 1);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
