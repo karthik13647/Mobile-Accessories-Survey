@@ -29,6 +29,10 @@ app.register_blueprint(referral_bp)      # Handles referral routes at '/referral
 with app.app_context():
     db.create_all()
 
+@app.route('/track-dropoff', methods=['POST'])
+def track_dropoff():
+    return "Dropoff tracked", 200
+
 # --- S2S Tracking Endpoint ---
 @app.route('/track-action', methods=['POST'])
 def track_action():

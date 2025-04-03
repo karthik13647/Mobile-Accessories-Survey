@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-W2N6F95B');</script>
-    <!-- End Google Tag Manager -->      
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-W2N6F95B');</script>
+  <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Survey Responses</title>
@@ -105,16 +105,32 @@
       td:nth-of-type(2):before { content: "Referral ID"; }
       td:nth-of-type(3):before { content: "Age"; }
       td:nth-of-type(4):before { content: "Survey Data"; }
-      td:nth-of-type(5):before { content: "Status"; }
-      td:nth-of-type(6):before { content: "Timestamp"; }
+      td:nth-of-type(5):before { content: "More Details"; }
+      td:nth-of-type(6):before { content: "Status"; }
+      td:nth-of-type(7):before { content: "Timestamp"; }
+    }
+    /* Styling for structured JSON data */
+    .structured-data ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    .structured-data li {
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+    .structured-data li span.label {
+      font-weight: bold;
+      color: #2c3e50;
     }
   </style>
 </head>
 <body>
-   <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2N6F95B"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2N6F95B"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <div class="container">
     <h1>Survey Responses</h1>
     <table>
@@ -124,6 +140,7 @@
           <th>Referral ID</th>
           <th>Age</th>
           <th>Survey Data</th>
+          <th>More Details</th>
           <th>Status</th>
           <th>Timestamp</th>
         </tr>
@@ -137,26 +154,101 @@
           <td>
             {% set data = response.other_data | fromjson %}
             {% if data %}
-              <strong>Mood:</strong> {{ data.mood }}<br>
-              <strong>Special:</strong> {{ data.special }}<br>
-              <strong>Productivity:</strong> {{ data.productivity | join(', ') }}<br>
-              <strong>Accessories (Love):</strong> {{ data.accessoriesLove | join(', ') }}<br>
-              <strong>Accessories (Dislike):</strong> {{ data.accessoriesDislike | join(', ') }}<br>
-              <strong>Quality - Brand:</strong> {{ data.quality_brand }}<br>
-              <strong>Quality - Material:</strong> {{ data.quality_material }}<br>
-              <strong>Quality - Design:</strong> {{ data.quality_design }}<br>
-              <strong>Quality - Durability:</strong> {{ data.quality_durability }}<br>
-              <strong>Quality - Features:</strong> {{ data.quality_features }}<br>
-              <strong>Quality - Warranty:</strong> {{ data.quality_warranty }}<br>
-              <strong>Quality - Fit:</strong> {{ data.quality_fit }}<br>
-              <strong>Quality - Eco:</strong> {{ data.quality_eco }}<br>
-              <strong>Phone Case Value:</strong> {{ data.phonecase_value }}<br>
-              <strong>Music Picks:</strong> {{ data.music_pick | join(', ') }}<br>
-              <strong>Spending:</strong> {{ data.spend }}
+              <ul class="structured-data">
+                {% if data.mood is defined %}
+                  <li><span class="label">Mood:</span> {{ data.mood }}</li>
+                {% endif %}
+                {% if data.special is defined %}
+                  <li><span class="label">Special:</span> {{ data.special }}</li>
+                {% endif %}
+                {% if data.productivity is defined %}
+                  <li><span class="label">Productivity:</span> {{ data.productivity | join(', ') }}</li>
+                {% endif %}
+                {% if data.accessoriesLove is defined %}
+                  <li><span class="label">Accessories (Love):</span> {{ data.accessoriesLove | join(', ') }}</li>
+                {% endif %}
+                {% if data.accessoriesDislike is defined %}
+                  <li><span class="label">Accessories (Dislike):</span> {{ data.accessoriesDislike | join(', ') }}</li>
+                {% endif %}
+                {% if data.quality_brand is defined %}
+                  <li><span class="label">Quality - Brand:</span> {{ data.quality_brand }}</li>
+                {% endif %}
+                {% if data.quality_material is defined %}
+                  <li><span class="label">Quality - Material:</span> {{ data.quality_material }}</li>
+                {% endif %}
+                {% if data.quality_design is defined %}
+                  <li><span class="label">Quality - Design:</span> {{ data.quality_design }}</li>
+                {% endif %}
+                {% if data.quality_durability is defined %}
+                  <li><span class="label">Quality - Durability:</span> {{ data.quality_durability }}</li>
+                {% endif %}
+                {% if data.quality_features is defined %}
+                  <li><span class="label">Quality - Features:</span> {{ data.quality_features }}</li>
+                {% endif %}
+                {% if data.quality_warranty is defined %}
+                  <li><span class="label">Quality - Warranty:</span> {{ data.quality_warranty }}</li>
+                {% endif %}
+                {% if data.quality_fit is defined %}
+                  <li><span class="label">Quality - Fit:</span> {{ data.quality_fit }}</li>
+                {% endif %}
+                {% if data.quality_eco is defined %}
+                  <li><span class="label">Quality - Eco:</span> {{ data.quality_eco }}</li>
+                {% endif %}
+                {% if data.phonecase_value is defined %}
+                  <li><span class="label">Phone Case Value:</span> {{ data.phonecase_value }}</li>
+                {% endif %}
+                {% if data.music_pick is defined %}
+                  <li><span class="label">Music Picks:</span> {{ data.music_pick | join(', ') }}</li>
+                {% endif %}
+                {% if data.spend is defined %}
+                  <li><span class="label">Spending:</span> {{ data.spend }}</li>
+                {% endif %}
+              </ul>
             {% else %}
               No additional data.
             {% endif %}
           </td>
+          <td>
+            {% set more = response.tracking_data | fromjson %}
+            {% if more %}
+              <ul class="structured-data">
+                {% if more.timeSpent is defined %}
+                  <li>
+                    <span class="label">Time Spent:</span> 
+                    {{ (more.timeSpent/1000)|round(2) }} seconds
+                  </li>
+                {% endif %}
+                {% set tracking = response.tracking_data | fromjson %}
+                {% set questionMapping = {
+                      'q1': "Our mood affects entire day right. Tell me, what's your mood?",
+                      'q2': "Special things waiting for special persons: do you think you are the one..?",
+                      'q3': "We value time > not money, so where do you spend on productivity...?",
+                      'q4': "Accessories are guardian angels to mobile. so whom you choose?",
+                      'q5': "Every one loves a quality in mobile, what's quality attract you..",
+                      'q6': "Premium phone case is the Arc Reactor of Iron Man – what do you value most?",
+                      'q7': "Music is a therapy to all, what are the best picks for you?",
+                      'q8': "I value comfort in accessory over money, how much do you spend?",
+                      'q9': "Personality matters, not your age. However, what is your age?"
+                    } %}
+                {% if tracking.user_hesitated_questions and tracking.user_hesitated_questions | length > 0 %}
+                  <li>
+                    <span class="label">User Hesitated Questions:</span>
+                    <ul>
+                      {% for qid in tracking.user_hesitated_questions %}
+                        <li>
+                          <strong>{{ qid }}:</strong> {{ questionMapping[qid] if qid in questionMapping else "Unknown question" }}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% else %}
+                  <li>No hesitations were recorded.</li>
+                {% endif %}
+              </ul>
+            {% else %}
+              N/A
+            {% endif %}
+          </td>          
           <td>{{ response.status }}</td>
           <td>{{ response.timestamp }}</td>
         </tr>

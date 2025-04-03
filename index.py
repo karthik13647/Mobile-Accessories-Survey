@@ -1,14 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-import hashlib
-import uuid
-import json
+import hashlib, uuid, json
 from datetime import datetime
 
 # Create a Blueprint for the main index
 index_bp = Blueprint('index_bp', __name__)
-
-# Initialize a separate SQLAlchemy instance
 db = SQLAlchemy()
 
 # Predefined referral links and their codes
@@ -26,57 +22,50 @@ REFERRAL_LINKS = {
 }
 
 def hash_referral_id(referral_id):
-    """Generate a SHA256 hash for the referral ID."""
     if not referral_id:
         return None
     return hashlib.sha256(referral_id.encode()).hexdigest()
 
 def generate_user_code():
-    """Generate a short unique user code (e.g., def456)."""
-    return uuid.uuid4().hex[:6]  # use the first 6 hex digits
+    return uuid.uuid4().hex[:6]
 
 def generate_direct_referral():
-    """Generate a unique referral id for direct access users."""
     return "direct-" + uuid.uuid4().hex[:6]
 
+# --------------------------
+# Database Models
+# --------------------------
 class UniqueUser(db.Model):
     __tablename__ = 'unique_user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # A user-friendly unique code for display (e.g., def456)
     user_code = db.Column(db.String(20), nullable=False, unique=True, default=generate_user_code)
     name = db.Column(db.String(100), nullable=False)
-    referral_id = db.Column(db.String(64), nullable=False, unique=True)  # Store hashed referral ID or direct id
-
-    # Relationship to Survey Responses
+    referral_id = db.Column(db.String(64), nullable=False, unique=True)
     responses = db.relationship('SurveyResponseIndex', backref='unique_user', lazy=True)
 
 class SurveyResponseIndex(db.Model):
     __tablename__ = 'survey_response'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    # Every survey response is linked to a UniqueUser
     unique_user_id = db.Column(db.Integer, db.ForeignKey('unique_user.id'), nullable=False)
-    # referral_id field to record the referral (or direct) identifier
     referral_id = db.Column(db.String(64), nullable=False, default="direct")
-    
-    # Survey details – note that age is stored in a dedicated column
     age = db.Column(db.String(20), nullable=False, default='-')
-    # Other responses are stored as a JSON string in other_data
     other_data = db.Column(db.Text, nullable=True)
-    
-    # Survey status: Set to "Completed" on form submission.
+    # New column to store tracking data (JSON string with field interactions and drop-off info)
+    tracking_data = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(50), nullable=True, default="Completed")
-    # Timestamp for when the survey was submitted
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 class CustomerAction(db.Model):
     __tablename__ = 'customer_action'
     id = db.Column(db.Integer, primary_key=True)
-    unique_user_id = db.Column(db.Integer, nullable=True)   # Stores the UniqueUser id
-    action_type = db.Column(db.String(20), nullable=False)    # e.g., 'Clicked' or 'Completed'
-    referral_id = db.Column(db.String(64), nullable=False)    # Referral identifier (hashed or direct)
+    unique_user_id = db.Column(db.Integer, nullable=True)
+    action_type = db.Column(db.String(20), nullable=False)
+    referral_id = db.Column(db.String(64), nullable=False)
     timestamp = db.Column(db.DateTime, server_default=db.func.now())
 
-# Referral redirect route: logs a "Clicked" action and creates a UniqueUser if needed.
+# --------------------------
+# Routes
+# --------------------------
 @index_bp.route('/<referral_link>', methods=['GET'])
 def referral_redirect(referral_link):
     if referral_link in REFERRAL_LINKS:
@@ -84,7 +73,6 @@ def referral_redirect(referral_link):
         hashed_referral = hash_referral_id(referral_code)
         unique_user = UniqueUser.query.filter_by(referral_id=hashed_referral).first()
         if not unique_user:
-            # Create a UniqueUser for the referral click event.
             unique_user = UniqueUser(name="Referral User", referral_id=hashed_referral)
             try:
                 db.session.add(unique_user)
@@ -104,17 +92,18 @@ def referral_redirect(referral_link):
         except Exception as e:
             db.session.rollback()
             return f"Error logging action: {str(e)}", 500
-        # Save referral_code in session so the form knows it came from a referral
         session['referral_code'] = referral_code
         return redirect(url_for('index_bp.index'))
     return "Invalid referral link", 404
 
-# Main page route: handles form submission for survey responses.
+
+
 @index_bp.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # --- Retrieve new form fields from the Premium Mobile Accessories Survey ---
-        # Note: Some fields are checkboxes so use getlist for those arrays.
+        # -------------------------------
+        # Retrieve Survey Responses from the Form
+        # -------------------------------
         mood = request.form.get('mood')
         special = request.form.get('special')
         productivity = request.form.getlist('productivity[]')
@@ -131,9 +120,9 @@ def index():
         phonecase_value = request.form.get('phonecase_value')
         music_pick = request.form.getlist('music_pick[]')
         spend = request.form.get('spend')
-        age = request.form.get('age') or '-'  # This also goes to the SurveyResponseIndex.age column
+        age = request.form.get('age') or '-'
 
-        # Bundle all additional responses into a dictionary and convert to JSON.
+        # Bundle additional info into a dictionary
         additional_info = {
             "mood": mood,
             "special": special,
@@ -154,10 +143,15 @@ def index():
         }
         other_data_json = json.dumps(additional_info)
 
-        # Since the new HTML does not include a name field, use a default value.
+        # Retrieve tracking data (time spent & field interactions) from the form
+        tracking_data = request.form.get('trackingData')
+
+        # Use a default name (since the form doesn't capture a name)
         name = "Anonymous"
 
-        # Check if there is a referral code in session.
+        # -------------------------------
+        # Check for Referral Code in Session and Create UniqueUser
+        # -------------------------------
         referral_code = session.pop('referral_code', None)
         if referral_code:
             hashed_referral = hash_referral_id(referral_code)
@@ -173,7 +167,6 @@ def index():
             unique_user_id = unique_user.id
             final_referral = hashed_referral
         else:
-            # Direct access: generate a unique referral id.
             direct_ref = generate_direct_referral()
             unique_user = UniqueUser(name=name, referral_id=direct_ref)
             try:
@@ -185,12 +178,15 @@ def index():
             unique_user_id = unique_user.id
             final_referral = direct_ref
 
-        # Create a new survey response with status "Completed"
+        # -------------------------------
+        # Create and Save the Survey Response with Tracking Data
+        # -------------------------------
         new_response = SurveyResponseIndex(
             unique_user_id=unique_user_id,
             referral_id=final_referral,
             age=age,
             other_data=other_data_json,
+            tracking_data=tracking_data,  # Save tracking (field interaction & drop-off) info here
             status="Completed"
         )
         try:
@@ -204,7 +200,6 @@ def index():
 
     return render_template('index.html')
 
-# Route to view all survey responses.
 @index_bp.route('/responses')
 def responses():
     responses = SurveyResponseIndex.query.all()

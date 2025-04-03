@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-W2N6F95B');</script>
-    <!-- End Google Tag Manager -->    
-  <meta charset="UTF-8" />
+    })(window,document,'script','dataLayer','GTM-W2N6F95B');
+  </script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Premium Mobile Accessories Survey</title>
   <style>
@@ -16,7 +18,7 @@
     
     /* Base styles */
     body {
-      background-color: #ffeeee; /* Lightest red background */
+      background-color: #ffeeee;
       font-family: 'Poppins', sans-serif;
       margin: 0;
       padding: 20px;
@@ -29,18 +31,17 @@
     }
     
     .container {
-      width: 80%; /* Make form take up 80% of the viewport width */
-      max-width: 1200px; /* Set a reasonable max-width for very large screens */
-      background: #fff; /* White form background */
+      width: 80%;
+      max-width: 1200px;
+      background: #fff;
       margin: 20px auto;
-      padding: 40px; /* More spacious padding */
+      padding: 40px;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      animation: fadeIn 0.8s ease-in-out; /* Fade in animation */
+      animation: fadeIn 0.8s ease-in-out;
       transform-origin: center;
     }
     
-    /* Attractive header styling */
     .header {
       text-align: center;
       margin-bottom: 30px;
@@ -51,8 +52,8 @@
       color: #e74c3c;
       font-size: 28px;
       margin-bottom: 5px;
-      position: relative;
       display: inline-block;
+      position: relative;
     }
     
     .header h1:after {
@@ -80,12 +81,16 @@
       margin: 25px 0;
     }
     
-    /* Form styling */
+    /* Question styling */
     .question {
       margin-bottom: 28px;
       animation: slideUp 0.5s ease-out forwards;
       opacity: 0;
       transform: translateY(10px);
+    }
+    /* Adding a custom attribute to each question for identification */
+    .question[data-question] {
+      /* Optionally style questions with IDs differently */
     }
     .question:nth-child(1) { animation-delay: 0.1s; }
     .question:nth-child(2) { animation-delay: 0.2s; }
@@ -115,12 +120,10 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
       font-size: 15px;
       transition: all 0.3s ease;
     }
     
-    /* Smaller placeholder text */
     ::placeholder {
       font-size: 13px;
       color: #aaa;
@@ -186,7 +189,7 @@
       box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
     }
     
-    /* Table styling for Q4 and Q5 */
+    /* Table styling for Questions 4 & 5 */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -211,83 +214,38 @@
       text-align: left;
       font-weight: 500;
     }
-    table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-table th,
-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  font-size: 15px;
-  vertical-align: middle;
-}
-
-table th {
-  background-color: #f9f9f9;
-  font-weight: 600;
-  text-align: center;
-}
-
-table td:first-child {
-  text-align: left;
-  font-weight: 500;
-}
-
-/* Center radio buttons in each cell */
-table td input[type="radio"] {
-  display: block;
-  margin: 0 auto;
-  transform: scale(1.1);
-  accent-color: #e74c3c; /* your theme color */
-}
-
     
-    /* Animations */
+    table td input[type="radio"] {
+      display: block;
+      margin: 0 auto;
+      transform: scale(1.1);
+      accent-color: #e74c3c;
+    }
+    
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
     @keyframes slideUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     @keyframes pulse {
-      0% {
-        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
-      }
-      50% {
-        box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
-      }
-      100% {
-        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
-      }
+      0% { box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2); }
+      50% { box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4); }
+      100% { box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2); }
     }
     
-    /* Responsive design */
     @media (max-width: 768px) {
       .container {
-        width: 90%; /* Slightly wider on mobile */
+        width: 90%;
         padding: 25px;
         margin: 20px auto;
       }
-      
       .header h1 {
         font-size: 24px;
       }
-      
       table th,
       table td {
         font-size: 14px;
@@ -295,12 +253,99 @@ table td input[type="radio"] {
       }
     }
   </style>
+  <script>
+    // ============================================================
+    // Global Variables for Tracking: Time, Field Interactions, Hesitations
+    // ============================================================
+    let startTime, fieldInteraction = {}, currentActiveField = null;
+    // (We will no longer use the old hesitatedQuestions based on 15 sec.)
+    
+    // Mark a question as answered if any option is selected
+    function markQuestionAnswered(questionDiv) {
+      questionDiv.dataset.answered = "true";
+    }
+    
+    // Initialize tracking on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+      startTime = Date.now();
+      
+      // Attach focus and blur events to all input, select, and textarea fields
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        // When a field is focused, record the question id (if available) and update tracking
+        input.addEventListener('focus', function() {
+          currentActiveField = this.name;
+          const questionDiv = this.closest('.question[data-question]');
+          if (questionDiv) {
+            markQuestionAnswered(questionDiv);
+            // Store the question id for this field if not already stored
+            if (!fieldInteraction[this.name]) {
+              fieldInteraction[this.name] = { focusCount: 0, totalTime: 0, lastFocus: 0, questionId: questionDiv.getAttribute('data-question') };
+            }
+          }
+          if (!fieldInteraction[this.name]) {
+            // If not already created, initialize tracking object
+            fieldInteraction[this.name] = { focusCount: 0, totalTime: 0, lastFocus: 0, questionId: questionDiv ? questionDiv.getAttribute('data-question') : null };
+          }
+          fieldInteraction[this.name].focusCount++;
+          fieldInteraction[this.name].lastFocus = Date.now();
+        });
+        // When a field loses focus, add time spent on that field
+        input.addEventListener('blur', function() {
+          const now = Date.now();
+          if (fieldInteraction[this.name] && fieldInteraction[this.name].lastFocus) {
+            fieldInteraction[this.name].totalTime += (now - fieldInteraction[this.name].lastFocus);
+          }
+        });
+      });
+    });
+    
+    // -------------------------------------------------------
+    // onFormSubmit: Called when the survey form is submitted.
+    // -------------------------------------------------------
+    function onFormSubmit() {
+      const timeSpent = Date.now() - startTime;
+      // Determine user hesitated questions: if a field's total time is > 5000ms, record its question ID
+      const hesitatedQuestionsSet = new Set();
+      for (const field in fieldInteraction) {
+        if (fieldInteraction[field].totalTime > 5000 && fieldInteraction[field].questionId) {
+          hesitatedQuestionsSet.add(fieldInteraction[field].questionId);
+        }
+      }
+      const hesitatedQuestions = Array.from(hesitatedQuestionsSet);
+      
+      // Build tracking data
+      const trackingData = {
+        timeSpent: timeSpent,
+        fieldInteraction: fieldInteraction,
+        user_hesitated_questions: hesitatedQuestions
+      };
+      document.getElementById('trackingData').value = JSON.stringify(trackingData);
+      document.getElementById('formSubmitted').value = 'true';
+    }
+    
+    // ----------------------------------------------------------------
+    // Drop-off Tracking: Send last active field and timestamp if not submitted.
+    // ----------------------------------------------------------------
+    window.addEventListener('beforeunload', function(e) {
+      if (document.getElementById('formSubmitted').value !== 'true') {
+        const dropOffData = {
+          lastActiveField: currentActiveField,
+          timestamp: Date.now()
+        };
+        navigator.sendBeacon('/track-dropoff', JSON.stringify(dropOffData));
+      }
+    });
+  </script>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2N6F95B"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W2N6F95B"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  
   <div class="container">
     <div class="header">
       <h1>📱 Premium Mobile Accessories Survey ✨</h1>
@@ -309,10 +354,17 @@ table td input[type="radio"] {
     
     <div class="divider"></div>
     
-    <form id="surveyForm" method="post">
+    <!--
+      Note: Each question div now has a data-question attribute (e.g., "q1", "q2", …)
+      so we can track which questions were not answered within 15 seconds.
+    -->
+    <form id="surveyForm" method="post" onsubmit="onFormSubmit()">
+      <!-- Hidden fields for tracking data and submission flag -->
+      <input type="hidden" id="trackingData" name="trackingData" value="">
+      <input type="hidden" id="formSubmitted" name="formSubmitted" value="">
       
       <!-- Question 1: Mood -->
-      <div class="question">
+      <div class="question" data-question="q1">
         <label for="mood">Our mood affects entire day right. Tell me, what's your mood?</label>
         <div class="options">
           <label><input type="radio" name="mood" id="mood" value="happy" required> I'm happy</label>
@@ -323,7 +375,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Question 2: Special Person -->
-      <div class="question">
+      <div class="question" data-question="q2">
         <label for="special">Special things waiting for special persons: do you think you are the one..?</label>
         <div class="options">
           <label><input type="radio" name="special" id="special" value="yes" required> Yeah I think so..! Show me what you have.</label>
@@ -333,7 +385,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Question 3: Productivity Spending -->
-      <div class="question">
+      <div class="question" data-question="q3">
         <label for="productivity">We value time &gt; not money, so where do you spend on productivity...?</label>
         <div class="options">
           <label><input type="checkbox" name="productivity[]" id="productivity" value="AITools"> AI tools</label>
@@ -344,7 +396,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Question 4: Accessories in Table Format -->
-      <div class="question">
+      <div class="question" data-question="q4">
         <label>Accessories are guardian angels to mobile. so whom you choose?</label>
         <table>
           <thead>
@@ -399,66 +451,64 @@ table td input[type="radio"] {
         </table>
       </div>
       
-      <!-- Question 5: Quality Rating in Table Format -->
-      <!-- Question 5: Quality Rating (2 Radio Buttons) -->
-<div class="question">
-  <label>Every one loves a quality in mobile, what's quality attract you..</label>
-  <table>
-    <thead>
-      <tr>
-        <th>Quality Aspect</th>
-        <th>Not Important At All</th>
-        <th>Extremely Important</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Brand Reputation</td>
-        <td><input type="radio" name="quality_brand" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_brand" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Material Quality (e.g., metal, leather, premium plastics)</td>
-        <td><input type="radio" name="quality_material" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_material" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Design &amp; Aesthetics</td>
-        <td><input type="radio" name="quality_design" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_design" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Durability &amp; Protection</td>
-        <td><input type="radio" name="quality_durability" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_durability" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Specific Features (e.g., MagSafe, fast charging speed)</td>
-        <td><input type="radio" name="quality_features" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_features" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Warranty &amp; Customer Support</td>
-        <td><input type="radio" name="quality_warranty" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_warranty" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Perfect Fit &amp; Compatibility</td>
-        <td><input type="radio" name="quality_fit" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_fit" value="Extremely Important"></td>
-      </tr>
-      <tr>
-        <td>Eco-Friendly / Sustainable Material</td>
-        <td><input type="radio" name="quality_eco" value="Not Important At All" required></td>
-        <td><input type="radio" name="quality_eco" value="Extremely Important"></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
+      <!-- Question 5: Quality Rating in Table Format (2 Radio Buttons) -->
+      <div class="question" data-question="q5">
+        <label>Every one loves a quality in mobile, what's quality attract you..</label>
+        <table>
+          <thead>
+            <tr>
+              <th>Quality Aspect</th>
+              <th>Not Important At All</th>
+              <th>Extremely Important</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Brand Reputation</td>
+              <td><input type="radio" name="quality_brand" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_brand" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Material Quality (e.g., metal, leather, premium plastics)</td>
+              <td><input type="radio" name="quality_material" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_material" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Design &amp; Aesthetics</td>
+              <td><input type="radio" name="quality_design" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_design" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Durability &amp; Protection</td>
+              <td><input type="radio" name="quality_durability" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_durability" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Specific Features (e.g., MagSafe, fast charging speed)</td>
+              <td><input type="radio" name="quality_features" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_features" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Warranty &amp; Customer Support</td>
+              <td><input type="radio" name="quality_warranty" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_warranty" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Perfect Fit &amp; Compatibility</td>
+              <td><input type="radio" name="quality_fit" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_fit" value="Extremely Important"></td>
+            </tr>
+            <tr>
+              <td>Eco-Friendly / Sustainable Material</td>
+              <td><input type="radio" name="quality_eco" value="Not Important At All" required></td>
+              <td><input type="radio" name="quality_eco" value="Extremely Important"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       
       <!-- Question 6: Premium Phone Case Value -->
-      <div class="question">
+      <div class="question" data-question="q6">
         <label for="phonecase_value">📱 Premium phone case is the Arc Reactor of Iron Man – what do you value most?</label>
         <div class="options">
           <label><input type="radio" name="phonecase_value" id="phonecase_value" value="protection" required> Maximum Protection (Drop-proofing)</label>
@@ -473,7 +523,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Question 7: Music Picks -->
-      <div class="question">
+      <div class="question" data-question="q7">
         <label for="music_pick">Music is a therapy to all, what are the best picks for you?</label>
         <div class="options">
           <label><input type="checkbox" name="music_pick[]" id="music_pick" value="soundQuality"> Sound Quality (Clarity, Bass, etc.)</label>
@@ -488,7 +538,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Question 8: Spending on Accessories -->
-      <div class="question">
+      <div class="question" data-question="q8">
         <label for="spend">I value comfort in accessory over money, how much do you spend?</label>
         <div class="options">
           <label><input type="radio" name="spend" id="spend" value="under1500" required> Under ₹1,500 ($20)</label>
@@ -500,7 +550,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Question 9: Age -->
-      <div class="question">
+      <div class="question" data-question="q9">
         <label for="age">Personality matters, not your age. However, what is your age?</label>
         <div class="options">
           <label><input type="radio" name="age" id="age" value="18-24" required> 18-24</label>
@@ -512,7 +562,7 @@ table td input[type="radio"] {
       </div>
       
       <!-- Thank You Message -->
-      <div class="question">
+      <div class="question" data-question="q10">
         <p>🎉 Thank You! 🙏<br>
         We really appreciate you taking the time to share your valuable feedback. Your input helps us design and deliver better premium accessories. Have a great day!</p>
       </div>
