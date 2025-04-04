@@ -252,6 +252,71 @@
         padding: 8px;
       }
     }
+    /* Custom styling for Gender and Day Experience questions */
+  .gender-question,
+  .female-day-question,
+  .teen-day-question,
+  .old-day-question {
+      margin-bottom: 28px;
+      padding: 15px 20px;
+      background: #fff;
+      /* border: 1px solid #ddd; */
+      border-radius: 8px;
+      /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); */
+      animation: slideUp 0.5s ease-out forwards;
+  }
+  
+  .gender-question label,
+  .female-day-question label,
+  .teen-day-question label,
+  .old-day-question label {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #444;
+      font-size: 16px;
+      display: block;
+  }
+  
+  /* Layout options in a row (wrap if needed) */
+  .gender-question .options,
+  .female-day-question .options,
+  .teen-day-question .options,
+  .old-day-question .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+  }
+  
+  /* Option styling */
+  .gender-question .options label,
+  .female-day-question .options label,
+  .teen-day-question .options label,
+  .old-day-question .options label {
+      background: #f7f7f7;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      flex: 1 1 auto;
+      text-align: center;
+  }
+  
+  .gender-question .options label:hover,
+  .female-day-question .options label:hover,
+  .teen-day-question .options label:hover,
+  .old-day-question .options label:hover {
+      background: #fdecea;
+  }
+  
+  /* Ensuring radio inputs remain hidden while still accessible */
+  .gender-question .options input[type="radio"],
+  .female-day-question .options input[type="radio"],
+  .teen-day-question .options input[type="radio"],
+  .old-day-question .options input[type="radio"] {
+      margin-right: 8px;
+      transform: scale(1.2);
+      accent-color: #e74c3c;
+  }
   </style>
   <script>
     // ============================================================
@@ -336,6 +401,47 @@
         navigator.sendBeacon('/track-dropoff', JSON.stringify(dropOffData));
       }
     });
+    function handleGenderSelection(type) {
+  const femaleQuestion = document.getElementById('femaleQuestion');
+  const teenQuestion = document.getElementById('teenQuestion');
+  const oldQuestion = document.getElementById('oldQuestion');
+  const dayExperienceInputs = document.getElementsByName('dayExperience');
+
+  // Hide all day experience questions and remove the animation class
+  [femaleQuestion, teenQuestion, oldQuestion].forEach(question => {
+    question.style.display = 'none';
+    question.classList.remove('show-question');
+  });
+
+  // Clear all selections and remove 'required' attribute from dayExperience inputs
+  dayExperienceInputs.forEach(input => {
+    input.checked = false;
+    input.required = false;
+  });
+
+  // Determine the target question based on the selected gender type
+  let targetQuestion = null;
+  if (type === 'female') {
+    targetQuestion = femaleQuestion;
+  } else if (type === 'teen') {
+    targetQuestion = teenQuestion;
+  } else if (type === 'old') {
+    targetQuestion = oldQuestion;
+  }
+
+  // If a target question is determined, display it with animation and mark inputs as required
+  if (targetQuestion) {
+    targetQuestion.style.display = 'block';
+    setTimeout(() => {
+      targetQuestion.classList.add('show-question');
+    }, 50); // Small delay to ensure the animation triggers
+
+    dayExperienceInputs.forEach(input => {
+      input.required = true;
+    });
+  }
+}
+
   </script>
 </head>
 <body>
@@ -373,6 +479,51 @@
           <label><input type="radio" name="mood" id="mood" value="broke"> I lost 5Million right now how can i be happy huuman</label>
         </div>
       </div>
+
+            <!-- Gender -->
+            <div class="question gender-question">
+              <label>What's your gender? <span class="required"></span></label>
+              <div class="options">
+                <label><input type="radio" name="gender" value="Male" required onclick="handleGenderSelection('male')"> Male</label>
+                <label><input type="radio" name="gender" value="Female" onclick="handleGenderSelection('female')"> Female</label>
+                <label><input type="radio" name="gender" value="Teen Female" onclick="handleGenderSelection('teen')"> Teen Female</label>
+                <label><input type="radio" name="gender" value="Old Female" onclick="handleGenderSelection('old')"> Old Female</label>
+              </div>
+            </div>
+            
+            <!-- Female Day Experience Question (Initially Hidden) -->
+            <div class="question female-day-question" id="femaleQuestion" style="display: none;">
+              <label>How is your day? Please tell us how your day has been.</label>
+              <div class="options">
+                <label><input type="radio" name="dayExperience" value="great"> 🌟 Yeah, great of course!</label>
+                <label><input type="radio" name="dayExperience" value="notBad"> 😊 Not bad</label>
+                <label><input type="radio" name="dayExperience" value="fine"> 🤷‍♀️ Just fine</label>
+                <label><input type="radio" name="dayExperience" value="worst"> 😔 Worst day</label>
+              </div>
+            </div>
+            
+            <!-- Teen Female Day Experience Question (Initially Hidden) -->
+            <div class="question teen-day-question" id="teenQuestion" style="display: none;">
+              <label>How is your day? Let us know how it went, cutie.</label>
+              <div class="options">
+                <label><input type="radio" name="dayExperience" value="slaying"> ✨ Slaying it!</label>
+                <label><input type="radio" name="dayExperience" value="chill"> 😊 Pretty chill</label>
+                <label><input type="radio" name="dayExperience" value="normal"> 😌 Just another day</label>
+                <label><input type="radio" name="dayExperience" value="bad"> 😩 Ugh, don't ask</label>
+              </div>
+            </div>
+            
+            <!-- Old Female Day Experience Question (Initially Hidden) -->
+            <div class="question old-day-question" id="oldQuestion" style="display: none;">
+              <label>How is your day? We'd love to hear about your day.</label>
+              <div class="options">
+                <label><input type="radio" name="dayExperience" value="blessed"> 😊 Blessed and happy</label>
+                <label><input type="radio" name="dayExperience" value="okay"> 🌼 Feeling okay</label>
+                <label><input type="radio" name="dayExperience" value="tired"> 😌 A bit tired but managing</label>
+                <label><input type="radio" name="dayExperience" value="notBest"> 😞 Not the best day</label>
+              </div>
+            </div>
+      
       
       <!-- Question 2: Special Person -->
       <div class="question" data-question="q2">

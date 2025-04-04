@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from index import index_bp, db, CustomerAction
+from index import index_bp, db, CustomerAction, init_db
 from referral import referral_bp
 import os
 import json
