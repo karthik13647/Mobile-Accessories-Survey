@@ -211,13 +211,16 @@
         .structured-data ul {
             list-style-type: none;
             padding-left: 0;
-            text-decoration: none;
+            /* text-decoration: none; */
         }
-        .structured-data li {
+        
+        .structured-data li,
+        .structured-data li a {
+            text-decoration: none !important;
             margin-bottom: 5px;
             line-height: 1.4;
-            text-decoration: none;
         }
+
         .structured-data li span.label {
             font-weight: bold;
             color: var(--text-color);
@@ -340,46 +343,51 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% set more = response.tracking_data | fromjson %}
-                            {% if more %}
-                                <ul class="structured-data">
-                                    {% if more.timeSpent is defined %}
+                            {% set tracking = response.tracking_data | fromjson %}
+                            {% if tracking %}
+                              <ul class="structured-data">
+                                {% if tracking.timeSpent is defined %}
+                                  <li>
+                                    <span class="label">Total Time on Form:</span> {{ (tracking.timeSpent / 1000) | round(2) }} seconds
+                                  </li>
+                                {% endif %}
+                          
+                                {% set questionMapping = {
+                                  'q1': "What's your mood?",
+                                  'q2': "Do you think you're the special one?",
+                                  'q3': "Where do you spend on productivity?",
+                                  'q4': "Which accessories do you love or dislike?",
+                                  'q5': "What quality attracts you the most in mobile accessories?",
+                                  'q6': "What do you value most in a premium phone case?",
+                                  'q7': "What are your top music picks?",
+                                  'q8': "How much do you usually spend on accessories?",
+                                  'q9': "What's your age?"
+                                } %}
+                          
+                                {% if tracking.fieldInteraction is defined %}
+                                  <li><span class="label">Time Spent Per Question:</span>
+                                    <ul>
+                                      {% set questionTimes = {} %}
+                                      {% for field, details in tracking.fieldInteraction.items() %}
+                                        {% set qid = details.questionId %}
+                                        {% if qid %}
+                                          {% set _ = questionTimes.update({qid: (questionTimes.get(qid, 0) + details.totalTime)}) %}
+                                        {% endif %}
+                                      {% endfor %}
+                                      {% for qid, time in questionTimes.items() %}
                                         <li>
-                                            <span class="label">Time Spent:</span> 
-                                            {{ (more.timeSpent/1000)|round(2) }} seconds
+                                          <span class="label">{{ questionMapping[qid] if qid in questionMapping else qid }}:</span>
+                                          {{ (time / 1000) | round(2) }} seconds
                                         </li>
-                                    {% endif %}
-                                    {% set tracking = response.tracking_data | fromjson %}
-                                    {% set questionMapping = {
-                                          'q1': "Our mood affects entire day right. Tell me, what's your mood?",
-                                          'q2': "Special things waiting for special persons: do you think you are the one..?",
-                                          'q3': "We value time > not money, so where do you spend on productivity...?",
-                                          'q4': "Accessories are guardian angels to mobile. so whom you choose?",
-                                          'q5': "Every one loves a quality in mobile, what's quality attract you..",
-                                          'q6': "Premium phone case is the Arc Reactor of Iron Man – what do you value most?",
-                                          'q7': "Music is a therapy to all, what are the best picks for you?",
-                                          'q8': "I value comfort in accessory over money, how much do you spend?",
-                                          'q9': "Personality matters, not your age. However, what is your age?"
-                                        } %}
-                                    {% if tracking.user_hesitated_questions and tracking.user_hesitated_questions | length > 0 %}
-                                        <li>
-                                            <span class="label">User Hesitated Questions:</span>
-                                            <ul>
-                                                {% for qid in tracking.user_hesitated_questions %}
-                                                    <li>
-                                                        <strong>{{ qid }}:</strong> {{ questionMapping[qid] if qid in questionMapping else "Unknown question" }}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                    {% else %}
-                                        <li>No hesitations were recorded.</li>
-                                    {% endif %}
-                                </ul>
+                                      {% endfor %}
+                                    </ul>
+                                  </li>
+                                {% endif %}
+                              </ul>
                             {% else %}
-                                N/A
+                              N/A
                             {% endif %}
-                        </td>
+                          </td>                          
                         <td>{{ response.status }}</td>
                         <td>{{ response.timestamp }}</td>
                         <td>
@@ -407,6 +415,7 @@
 
         <div style="text-align: center;">
             <a href="/" class="home-link">Back to Survey</a>
+            <a href="{{ url_for('index_bp.clicked_status') }}"class="home-link">See Clicked Status</a>
         </div>
     </div>
 </body>

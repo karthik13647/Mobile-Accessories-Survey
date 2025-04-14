@@ -3,3 +3,9 @@ Flask-SQLAlchemy
 SQLAlchemy
 gunicorn
 requests
+Flask_Bcrypt
+Flask-Mail
+itsdangerous
+Flask-Dance
+python-dotenv
+mongoengine

@@ -1,251 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Survey Responses</title>
-    <style>
-        :root {
-            --primary-color: #4a90e2;
-            --secondary-color: #f5f6fa;
-            --text-color: #2c3e50;
-            --border-color: #dcdde1;
-            --success-color: #2ecc71;
-            --warning-color: #f1c40f;
-            --danger-color: #e74c3c;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-            color: var(--text-color);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .header h1 {
-            color: var(--primary-color);
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--secondary-color);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            color: var(--text-color);
-            font-size: 1.1em;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            margin-top: 30px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background: var(--primary-color);
-            color: white;
-            font-weight: 500;
-        }
-
-        tr:nth-child(even) {
-            background: var(--secondary-color);
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .home-link {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 24px;
-            background: var(--primary-color);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: background 0.3s ease;
-        }
-
-        .home-link:hover {
-            background: var(--hover-color);
-        }
-
-        .location-info {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .location-icon {
-            color: var(--primary-color);
-        }
-
-        .device-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        .device-mobile {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .device-tablet {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
-
-        .device-desktop {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Dynamic Question Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .question {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+    .question input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .question select {
+      padding: 8px;
+      border-radius: 6px;
+    }
+    .question input[type="button"] {
+      background: #ff4c4c;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #addBtn, #submitBtn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-right: 10px;
+    }
+    #previewForm {
+      margin-top: 30px;
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+    #previewForm div {
+      margin-bottom: 15px;
+    }
+    #previewForm label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    #previewForm input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Survey Responses</h1>
-            <p>View all survey submissions and analytics</p>
-        </div>
 
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-number">{{ responses|length }}</div>
-                <div class="stat-label">Total Responses</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ responses|selectattr('gender', 'equalto', 'Male')|list|length }}</div>
-                <div class="stat-label">Male Respondents</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ responses|selectattr('gender', 'equalto', 'Female')|list|length }}</div>
-                <div class="stat-label">Female Respondents</div>
-            </div>
-        </div>
+<div class="container">
+  <h2>Create Your Form</h2>
+  <div id="questionList">
+    <!-- Questions will be added here -->
+  </div>
 
-        <div class="table-container">
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>Age</th>
-                    <th>Location</th>
-                    <th>Device</th>
-                    <th>Alarm Usage</th>
-                    <th>Day Experience</th>
-                    <th>IP Address</th>
-                </tr>
-                {% for response in responses %}
-                <tr>
-                    <td>{{ response.id }}</td>
-                    <td>{{ response.name }}</td>
-                    <td>{{ response.gender }}</td>
-                    <td>{{ response.age }}</td>
-                    <td>
-                        <div class="location-info">
-                            <span class="location-icon">📍</span>
-                            {% if response.city and response.country %}
-                                {{ response.city }}, {{ response.country }}
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td>
-                        <span class="device-badge device-{{ response.device_type or 'desktop' }}">
-                            {{ response.device_type or 'Desktop' }}
-                        </span>
-                    </td>
-                    <td>{{ response.alarm_usage }}</td>
-                    <td>{{ response.day_experience or 'N/A' }}</td>
-                    <td>{{ response.ip_address or 'N/A' }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+  <input type="button" id="addBtn" value="Add Question">
+  <input type="button" id="submitBtn" value="Generate Form">
 
-        <a href="/" class="home-link">Back to Survey</a>
-    </div>
+  <div id="previewForm">
+    <!-- Generated form appears here -->
+  </div>
+</div>
+
+<script>
+  const questionList = document.getElementById('questionList');
+  const addBtn = document.getElementById('addBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const previewForm = document.getElementById('previewForm');
+
+  function createQuestion(label = '', type = 'text') {
+    const div = document.createElement('div');
+    div.className = 'question';
+
+    const labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.placeholder = 'Enter question label';
+    labelInput.value = label;
+
+    const typeSelect = document.createElement('select');
+    ['text', 'email', 'number', 'date', 'password'].forEach(t => {
+      const option = document.createElement('option');
+      option.value = t;
+      option.text = t.charAt(0).toUpperCase() + t.slice(1);
+      if (t === type) option.selected = true;
+      typeSelect.appendChild(option);
+    });
+
+    const removeBtn = document.createElement('input');
+    removeBtn.type = 'button';
+    removeBtn.value = 'X';
+    removeBtn.onclick = () => div.remove();
+
+    div.appendChild(labelInput);
+    div.appendChild(typeSelect);
+    div.appendChild(removeBtn);
+
+    questionList.appendChild(div);
+  }
+
+  addBtn.onclick = () => createQuestion();
+
+  submitBtn.onclick = () => {
+    previewForm.innerHTML = '<h3>Generated Form:</h3>';
+    const questions = questionList.querySelectorAll('.question');
+
+    questions.forEach(q => {
+      const label = q.querySelector('input[type="text"]').value;
+      const type = q.querySelector('select').value;
+
+      const field = document.createElement('div');
+      const labelElem = document.createElement('label');
+      labelElem.textContent = label;
+
+      const inputElem = document.createElement('input');
+      inputElem.type = type;
+
+      field.appendChild(labelElem);
+      field.appendChild(inputElem);
+      previewForm.appendChild(field);
+    });
+  };
+
+  // Add a default question to start
+  createQuestion('Your Name', 'text');
+</script>
+
 </body>
 </html>

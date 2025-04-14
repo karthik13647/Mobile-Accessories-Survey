@@ -4,6 +4,17 @@ import hashlib, uuid, json
 from datetime import datetime
 import requests
 from sqlalchemy import text
+from flask_mail import Mail, Message
+from dotenv import load_dotenv
+import os
+import json
+from mongoengine import Document, StringField, DateTimeField, FloatField, ListField, ReferenceField
+
+# Load environment variables
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), 'Envs.env'))
+
+# Initialize Flask-Mail
+mail = Mail()
 
 # Create a Blueprint for the main index
 index_bp = Blueprint('index_bp', __name__)
@@ -11,16 +22,8 @@ db = SQLAlchemy()
 
 # Predefined referral links and their codes
 REFERRAL_LINKS = {
-    'special-offer-1': 'LINK001',
-    'vip-access': 'LINK002',
-    'exclusive-deal': 'LINK003',
-    'premium-survey': 'LINK004',
-    'member-special': 'LINK005',
-    'limited-time': 'LINK006',
-    'early-access': 'LINK007',
-    'priority-user': 'LINK008',
-    'special-member': 'LINK009',
-    'vip-member': 'LINK010'
+    'uiengineer': 'karthik@pepeleads.com',
+    'dataengineer': 'jayant.a@pepeleads.com',
 }
 
 def hash_referral_id(referral_id):
@@ -52,6 +55,20 @@ def get_ip_info():
     except Exception as e:
         print(f"Error getting IP info: {e}")
     return None
+
+def send_payload_to_remote(data):
+    """
+    Sends a JSON payload to the remote server. Returns the response text (expected "OK" or "error").
+    """
+    remote_server_url = os.getenv("REMOTE_SERVER_URL", "http://127.0.0.1:5000/responses")
+    try:
+        response = requests.post(remote_server_url, json=data, timeout=5)
+        result_text = response.text.strip()
+        print("Remote server responded:", result_text)
+        return result_text
+    except Exception as e:
+        print("Error sending payload:", e)
+        return "error"
 
 # --------------------------
 # Functions to Update/Migrate Table Columns
@@ -129,7 +146,6 @@ def migrate_table_with_new_columns():
             print("Table migrated successfully with new columns")
     except Exception as e:
         print(f"Error migrating table: {e}")
-        # Optionally, attempt to rollback by dropping the temporary table.
         try:
             with db.engine.connect() as conn:
                 conn.execute(text("DROP TABLE IF EXISTS survey_response_new"))
@@ -165,11 +181,9 @@ class SurveyResponseIndex(db.Model):
     age = db.Column(db.String(20), nullable=False, default='-')
     gender = db.Column(db.String(20), nullable=True)  # New field for gender
     other_data = db.Column(db.Text, nullable=True)
-    # New column to store tracking data (JSON string with field interactions and drop-off info)
     tracking_data = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(50), nullable=True, default="Completed")
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    # New columns for device and location information, and day_experience
     device_type = db.Column(db.String(20), nullable=True)
     ip_address = db.Column(db.String(45), nullable=True)
     country = db.Column(db.String(100), nullable=True)
@@ -195,6 +209,19 @@ def referral_redirect(referral_link):
     if referral_link in REFERRAL_LINKS:
         referral_code = REFERRAL_LINKS[referral_link]
         hashed_referral = hash_referral_id(referral_code)
+        recipient_email = referral_code  # Since REFERRAL_LINKS values are emails
+        
+        # Send email notification
+        try:
+            msg = Message(
+                subject="New Referral Link Click",
+                recipients=[recipient_email],
+                body=f"Your referral link '{referral_link}' was clicked!",
+                sender=os.getenv('MAIL_DEFAULT_SENDER')
+            )
+            mail.send(msg)
+        except Exception as e:
+            print(f"Error sending email: {str(e)}")
         unique_user = UniqueUser.query.filter_by(referral_id=hashed_referral).first()
         if not unique_user:
             unique_user = UniqueUser(name="Referral User", referral_id=hashed_referral)
@@ -319,7 +346,7 @@ def index():
             age=age,
             gender=gender,                    # Save gender
             other_data=other_data_json,
-            tracking_data=tracking_data,      # Save tracking (field interaction & drop-off) info here
+            tracking_data=tracking_data,      # Save tracking info (field interaction & drop-off)
             status="Completed",
             device_type=device_type,
             ip_address=ip_info['ip_address'] if ip_info else None,
@@ -337,9 +364,41 @@ def index():
             db.session.rollback()
             return f"Error saving survey response: {str(e)}", 500
 
+        # -------------------------------
+        # Send JSON payload to remote server and log its result
+        # -------------------------------
+        payload = {
+            "survey_response_id": new_response.id,
+            "unique_user_id": unique_user_id,
+            "referral_id": final_referral,
+            "age": age,
+            "gender": gender,
+            "other_data": additional_info,
+            "timestamp": new_response.timestamp.isoformat() if new_response.timestamp else None
+        }
+        remote_result = send_payload_to_remote(payload)
+        action_type = "RemoteResponseOK" if remote_result == "OK" else "RemoteResponseError"
+        log_action = CustomerAction(
+            unique_user_id=unique_user_id,
+            action_type=action_type,
+            referral_id=final_referral
+        )
+        try:
+            db.session.add(log_action)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error logging remote response action: {e}")
+
         return redirect(url_for('index_bp.responses'))
 
     return render_template('index.html')
+
+@index_bp.route('/clicked_status')
+def clicked_status():
+    # Query the CustomerAction table for all actions (or filter as needed)
+    actions = CustomerAction.query.order_by(CustomerAction.timestamp.desc()).all()
+    return render_template('clicked_status.html', actions=actions)
 
 @index_bp.route('/responses')
 def responses():
