@@ -1,19 +1,24 @@
-from flask import Flask, request, jsonify
-from index import index_bp, db, CustomerAction, init_db
-from referral import referral_bp
+# app.py
 import os
 import json
+import pandas as pd
+from flask import Flask, request, jsonify, send_file
+from index import index_bp, db, CustomerAction, init_db
+from referral import referral_bp
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
-from mongoengine import connect
-
+from sqlalchemy import create_engine
 
 # Load environment variables (from .env file if needed)
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///survey_response.db')
+# Configure MySQL connection using SQLAlchemy (using URL-encoded credentials)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'SQLALCHEMY_DATABASE_URI',
+    'mysql+pymysql://root:Abhiprince%4047@127.0.0.1/survey_response?charset=utf8mb4'
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -22,14 +27,18 @@ app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'true').lower() in ['true
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
-app.config['MAIL_SSL']=True
+app.config['MAIL_SSL'] = True
 # Optional: remote server URL for sending JSON payloads
 app.config['REMOTE_SERVER_URL'] = os.getenv('REMOTE_SERVER_URL', 'http://127.0.0.1:5000/responses')
 
+# Initialize Flask-Mail
+mail = Mail(app)
 # Initialize the database with our app
-mail=Mail(app)
 db.init_app(app)
-# mail.init_app(app)
+
+# Register Blueprints
+app.register_blueprint(index_bp)         # Handles survey form at '/'
+app.register_blueprint(referral_bp)        # Handles referral routes at '/referral'
 
 # Custom Jinja filter to convert JSON strings to Python objects
 def fromjson_filter(s):
@@ -37,16 +46,12 @@ def fromjson_filter(s):
         return json.loads(s)
     except Exception:
         return {}
-
+        
 app.jinja_env.filters['fromjson'] = fromjson_filter
-
-# Register Blueprints
-app.register_blueprint(index_bp)         # Handles survey form at '/'
-app.register_blueprint(referral_bp)        # Handles referral routes at '/referral'
 
 # Create/update tables on app startup
 with app.app_context():
-    db.create_all()
+    init_db(app)
 
 @app.route('/track-dropoff', methods=['POST'])
 def track_dropoff():
@@ -76,6 +81,30 @@ def track_action():
         return jsonify({"error": str(e)}), 500
     
     return jsonify({"status": "success"}), 200
+
+# --- New Endpoint: Export DB Table to JSON File using Pandas ---
+@app.route('/export-json')
+def export_json():
+    # Create a SQLAlchemy engine using the same connection string as your app
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    try:
+        # Read the survey_response table into a Pandas DataFrame
+        df = pd.read_sql_table('survey_response', con=engine)
+    except Exception as e:
+        return jsonify({"error": f"Unable to read table: {str(e)}"}), 500
+    
+    # Convert the DataFrame to JSON (records orientation, indented)
+    json_data = df.to_json(orient='records', indent=4)
+    
+    # Define the output file path
+    output_file = os.path.join(basedir, 'survey_responses.json')
+    
+    # Write the JSON data to the file
+    with open(output_file, 'w') as f:
+        f.write(json_data)
+    
+    # Send the file as an attachment to the client
+    return send_file(output_file, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, current_app
 from flask_sqlalchemy import SQLAlchemy
 import hashlib, uuid, json
 from datetime import datetime
@@ -7,15 +7,14 @@ from sqlalchemy import text
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import os
-import json
-from mongoengine import Document, StringField, DateTimeField, FloatField, ListField, ReferenceField
+import pandas as pd
+from sqlalchemy import create_engine
 
 # Load environment variables
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), 'Envs.env'))
 
 # Initialize Flask-Mail
 mail = Mail()
-
 # Create a Blueprint for the main index
 index_bp = Blueprint('index_bp', __name__)
 db = SQLAlchemy()
@@ -90,6 +89,23 @@ def add_device_type_column():
     except Exception as e:
         print(f"Note (device_type): {e}")
 
+def update_json_file():
+    """
+    Reads the survey_response table and writes its content to a JSON file.
+    This file is updated automatically every time this function is called.
+    """
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
+    try:
+        df = pd.read_sql_table('survey_response', con=engine)
+    except Exception as e:
+        current_app.logger.error("Unable to read survey_response table: %s", e)
+        return False
+    output_file = os.path.join(basedir, 'survey_responses.json')
+    df.to_json(output_file, orient='records', indent=4)
+    current_app.logger.info("JSON file updated successfully at %s", output_file)
+    return True
+
 def add_location_tracking_columns():
     try:
         with db.engine.connect() as conn:
@@ -109,7 +125,6 @@ def add_location_tracking_columns():
 def migrate_table_with_new_columns():
     try:
         with db.engine.connect() as conn:
-            # Create a temporary table with all the required columns.
             conn.execute(text("""
                 CREATE TABLE IF NOT EXISTS survey_response_new (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -131,16 +146,13 @@ def migrate_table_with_new_columns():
                     day_experience VARCHAR(50)
                 )
             """))
-            # Copy data from the old table to the new one.
             conn.execute(text("""
                 INSERT INTO survey_response_new 
                 (id, unique_user_id, referral_id, age, gender, other_data, tracking_data, status, timestamp, device_type, ip_address, country, city, region, latitude, longitude, day_experience)
                 SELECT id, unique_user_id, referral_id, age, NULL, other_data, tracking_data, status, timestamp, device_type, ip_address, country, city, region, latitude, longitude, NULL
                 FROM survey_response
             """))
-            # Drop the old table.
             conn.execute(text("DROP TABLE survey_response"))
-            # Rename the new table to the original name.
             conn.execute(text("ALTER TABLE survey_response_new RENAME TO survey_response"))
             conn.commit()
             print("Table migrated successfully with new columns")
@@ -163,6 +175,43 @@ def init_db(app):
         # migrate_table_with_new_columns()
 
 # --------------------------
+# Additional Methods to Send the JSON File to a Remote Server
+# --------------------------
+def send_json_file_payload(json_file_path, target_url):
+    """
+    Sends the JSON file content as a JSON payload.
+    """
+    try:
+        with open(json_file_path, 'r') as f:
+            data = json.load(f)
+    except Exception as e:
+        current_app.logger.error("Error reading JSON file: %s", e)
+        return None
+
+    headers = {"Content-Type": "application/json"}
+    try:
+        response = requests.post(target_url, json=data, headers=headers)
+        current_app.logger.info("Response from sending JSON payload: %s", response.text)
+        return response
+    except Exception as e:
+        current_app.logger.error("Error sending JSON payload: %s", e)
+        return None
+
+def send_json_file_attachment(json_file_path, target_url):
+    """
+    Sends the JSON file as a file attachment.
+    """
+    try:
+        with open(json_file_path, 'rb') as f:
+            files = {'file': ('survey_responses.json', f, 'application/json')}
+            response = requests.post(target_url, files=files)
+        current_app.logger.info("Response from sending JSON attachment: %s", response.text)
+        return response
+    except Exception as e:
+        current_app.logger.error("Error sending JSON attachment: %s", e)
+        return None
+
+# --------------------------
 # Database Models
 # --------------------------
 class UniqueUser(db.Model):
@@ -179,7 +228,7 @@ class SurveyResponseIndex(db.Model):
     unique_user_id = db.Column(db.Integer, db.ForeignKey('unique_user.id'), nullable=False)
     referral_id = db.Column(db.String(64), nullable=False, default="direct")
     age = db.Column(db.String(20), nullable=False, default='-')
-    gender = db.Column(db.String(20), nullable=True)  # New field for gender
+    gender = db.Column(db.String(20), nullable=True)
     other_data = db.Column(db.Text, nullable=True)
     tracking_data = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(50), nullable=True, default="Completed")
@@ -396,11 +445,27 @@ def index():
 
 @index_bp.route('/clicked_status')
 def clicked_status():
-    # Query the CustomerAction table for all actions (or filter as needed)
     actions = CustomerAction.query.order_by(CustomerAction.timestamp.desc()).all()
     return render_template('clicked_status.html', actions=actions)
 
 @index_bp.route('/responses')
 def responses():
-    responses = SurveyResponseIndex.query.all()
+    # First update the JSON file using our helper function
+    if not update_json_file():
+        current_app.logger.error("JSON file update failed.")
+
+    # Define the location of the JSON file
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    json_file_path = os.path.join(basedir, 'survey_responses.json')
+    target_url = "https://surveytitans.com/postback/7b7662e8159314ef0bdb32bf038bba29?username={referral_id}"
+
+    # Option 1: Send the file contents as a JSON payload
+    send_json_file_payload(json_file_path, target_url)
+    
+    # Option 2: Alternatively, send the file as a file attachment
+    # Uncomment the following line to use the file attachment method instead:
+    # send_json_file_attachment(json_file_path, target_url)
+
+    # Fetch all survey responses from the database
+    responses = SurveyResponseIndex.query.order_by(SurveyResponseIndex.timestamp.desc()).all()
     return render_template('response1.html', responses=responses)
