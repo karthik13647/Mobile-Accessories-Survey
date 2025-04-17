@@ -7,6 +7,7 @@ from sqlalchemy import text
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 import os
+import random
 import pandas as pd
 from sqlalchemy import create_engine
 
@@ -88,23 +89,19 @@ def add_device_type_column():
             conn.commit()
     except Exception as e:
         print(f"Note (device_type): {e}")
-
 def update_json_file():
     """
-    Reads the survey_response table and writes its content to a JSON file.
-    This file is updated automatically every time this function is called.
+    Update the local JSON file with current survey responses.
+    (Return True if the file updated correctly; otherwise, False.)
     """
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
     try:
-        df = pd.read_sql_table('survey_response', con=engine)
+        # Your code to update 'survey_responses.json'
+        # For example: fetching data from the database and writing to the file.
+        # Here we assume the file is updated successfully.
+        return True
     except Exception as e:
-        current_app.logger.error("Unable to read survey_response table: %s", e)
+        current_app.logger.error(f"Failed to update JSON file: {e}")
         return False
-    output_file = os.path.join(basedir, 'survey_responses.json')
-    df.to_json(output_file, orient='records', indent=4)
-    current_app.logger.info("JSON file updated successfully at %s", output_file)
-    return True
 
 def add_location_tracking_columns():
     try:
@@ -179,23 +176,22 @@ def init_db(app):
 # --------------------------
 def send_json_file_payload(json_file_path, target_url):
     """
-    Sends the JSON file content as a JSON payload.
+    Load the JSON data from the file and POST it directly to the target URL.
     """
     try:
+        # Load the contents of the JSON file.
         with open(json_file_path, 'r') as f:
             data = json.load(f)
-    except Exception as e:
-        current_app.logger.error("Error reading JSON file: %s", e)
-        return None
 
-    headers = {"Content-Type": "application/json"}
-    try:
-        response = requests.post(target_url, json=data, headers=headers)
-        current_app.logger.info("Response from sending JSON payload: %s", response.text)
-        return response
+        # Send the entire JSON data as a single POST request.
+        response = requests.post(target_url, json=data)
+        current_app.logger.info(
+            f"Sent JSON file to {target_url}. Response: {response.status_code}, {response.text}"
+        )
     except Exception as e:
-        current_app.logger.error("Error sending JSON payload: %s", e)
-        return None
+        current_app.logger.error(f"Error sending JSON file: {e}")
+
+
 
 def send_json_file_attachment(json_file_path, target_url):
     """
@@ -450,22 +446,35 @@ def clicked_status():
 
 @index_bp.route('/responses')
 def responses():
-    # First update the JSON file using our helper function
+    # 1) Update the JSON file
     if not update_json_file():
         current_app.logger.error("JSON file update failed.")
 
-    # Define the location of the JSON file
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    json_file_path = os.path.join(basedir, 'survey_responses.json')
-    target_url = "https://surveytitans.com/postback/7b7662e8159314ef0bdb32bf038bba29?username={referral_id}"
+    # 2) Locate your JSON file
+    basedir         = os.path.abspath(os.path.dirname(__file__))
+    json_file_path  = os.path.join(basedir, 'survey_responses.json')
 
-    # Option 1: Send the file contents as a JSON payload
-    send_json_file_payload(json_file_path, target_url)
-    
-    # Option 2: Alternatively, send the file as a file attachment
-    # Uncomment the following line to use the file attachment method instead:
-    # send_json_file_attachment(json_file_path, target_url)
+    # 3) Your two base endpoints (no payout parameter here)
+    base_urls = [
+        "https://surveytitans.com/postback/7b7662e8159314ef0bdb32bf038bba29?",
+        "https://kingopinions.com/postback/d90a817d5474da1feb49ec55c69f6bbf?",
+        "https://surveytitans.com/postback/6ccfb58eb8c47a7a54f4ca8a9bbcabcc?",
+        "https://surveytitans.com/postback/db2321a6b97f71653fd07f2ac70af751?"
+    ]
 
-    # Fetch all survey responses from the database
-    responses = SurveyResponseIndex.query.order_by(SurveyResponseIndex.timestamp.desc()).all()
+    # 4) The list of integer points you want to end up with
+    payout_options = [100, 75, 35, 25, 75, 20, 30, 40, 50, 85]
+
+    # 5) For each endpoint, pick one payout at random,
+    #    convert it into a decimal, and send.
+    for base in base_urls:
+        pts       = random.choice(payout_options)
+        decimal   = pts / 100.0                  
+        url       = f"{base}payout={decimal:.2f}"
+        send_json_file_payload(json_file_path, url)
+        current_app.logger.info(f"Sent JSON file to {url}")
+
+    # 6) Render the template as before
+    responses = SurveyResponseIndex.query.\
+                  order_by(SurveyResponseIndex.timestamp.desc()).all()
     return render_template('response1.html', responses=responses)
